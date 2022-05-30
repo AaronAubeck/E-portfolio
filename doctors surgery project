@@ -1,0 +1,134 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[ ]:
+
+
+class Appointmentschedule:  # Only ever be 1
+    def __init__(self):
+        self.schedule = []
+
+    def add_appointment(self, *args):
+        new_app = Appointment(*args)
+        self.schedule.append(new_app)
+
+    def cancel_appointment(self, *args):
+        pass  # have run out of time to implement this
+
+    def find_next_available_appointment(self, *args):
+        # What is the logic behind this???
+        pass  
+
+
+APPOINTMENT_SCHEDULE = Appointmentschedule()
+
+
+class Appointment:
+    def __init__(self, healthcare_professional, patient):
+        self.healthcare_professional = healthcare_professional
+        self.patient = patient
+
+
+class Receptionist:  # Only 1 instance
+    def __init__(self, name, emp_num):
+        self.name = name
+        self.emp_num = emp_num
+
+    def make_app(self, healthcare_professional, patient):
+        APPOINTMENT_SCHEDULE.add_appointment(healthcare_professional, patient)
+
+    def cancel_app(self, healthcare_professional, patient):
+        pass
+        # TODO SOMETHING LIKE THIS/ run out of time to repair or implement this
+        #for app_index, app in enumerate(list):
+         #   print(app_index)
+            #if app == healthcare_professional, patient:
+            #    list.remove(app_index)  
+
+            
+class Patient:
+    def __init__(self, patient, address, phone):
+        self.patient = patient
+        self.address = address
+        self.phone = phone
+        self.prescriptions = []
+
+    def request_repeat(self, doctor, quantity, dosage):
+        new_presc = Doctor.issue_prescription(self, doctor, quantity, dosage)
+        self.prescriptions.append(new_presc)
+        return new_presc
+
+    def request_appointment(self, healthcare_professional):
+        APPOINTMENT_SCHEDULE.add_appointment(healthcare_professional, self)
+
+
+class Healthcareprofessional:
+
+    def __init__(self, name, emp_num):
+        self.name = name
+        self.emp_num = emp_num
+
+    def consultation(self, patient):
+        APPOINTMENT_SCHEDULE.add_appointment(self, patient)
+
+
+class Doctor(Healthcareprofessional):
+
+    def issue_prescription(self, patient, quantity, dosage):
+        return Prescription(patient, self, quantity, dosage)
+
+
+class Nurse(Healthcareprofessional):
+    pass
+
+
+class Prescription:
+    def __init__(self, patient: Patient, doctor: Doctor, quantity: int, dosage: float):
+        self.patient = patient
+        self.doctor = doctor
+        self.quantity = quantity
+        self.dosage = dosage
+
+    
+def senario1():
+    """
+    test a patient can request an appointment
+    :return:
+    """
+    # Make patient
+    # Make healthcare professional
+    global APPOINTMENT_SCHEDULE
+    dylan = Patient('dylan', '123fakestreet', '123pdidly')
+    hcp = Healthcareprofessional('Dr. Clay', '1')
+    dylan.request_appointment(hcp)
+    assert len(APPOINTMENT_SCHEDULE.schedule) == 1
+    assert type(APPOINTMENT_SCHEDULE.schedule[0]) == Appointment
+    print(APPOINTMENT_SCHEDULE.schedule[0])
+    
+    # Cleanup APPOINTMENT_SCHEDULE
+    APPOINTMENT_SCHEDULE = Appointmentschedule()
+    
+senario1()
+
+    
+def senario2():
+    """
+    test a doctor can issue a prescription
+    :return:
+    """
+    # Make patient
+    # Make healthcare professional
+    dylan = Patient('dylan', '123fakestreet', '123pdidly')
+    hcp = Healthcareprofessional('Dr. Clay', '1')
+    doc = Doctor('Dr. Clay', '1')
+    presc = Prescription(dylan, hcp, 2, 1.25)
+    doc.issue_prescription('dylan', 2, 1.25)
+    #assert len(APPOINTMENT_SCHEDULE.schedule) == 1
+    #assert type(APPOINTMENT_SCHEDULE.schedule[0]) == Appointment
+    #print(Patient.prescriptions)
+    
+    # Cleanup APPOINTMENT_SCHEDULE
+    #APPOINTMENT_SCHEDULE = Appointmentschedule()
+    
+senario2()
+
